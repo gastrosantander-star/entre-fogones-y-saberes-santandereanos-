@@ -58,7 +58,12 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      background: linear-gradient(135deg, #2F3E2A, #6F4E2E);
+      /* background: linear-gradient(135deg, #2F3E2A, #6F4E2E);*/
+      background-image: url('imagenes/santander-portada.png');  /* ← nombre de tu imagen */
+      background-size: cover;      /* La imagen cubre todo el espacio */
+      background-position: center; /* Centra la imagen */
+      background-repeat: no-repeat;/* No se repite */
+
     }
     .hero-content {
       background: rgba(0,0,0,0.55);
@@ -437,10 +442,10 @@
 
   // Ruta turística con puntos
   const destinosRuta = [
-    { nombre: "Barichara", plato: "Carne Oreada y Guarapo", img: "https://placehold.co/600x400/AF7F5A/FFF?text=Barichara", lat: 6.635, lng: -73.222, descripcion: "Patrimonio arquitectónico y gastronómico. Prueba la carne oreada en el mirador." },
-    { nombre: "San Gil", plato: "Hormigas Culonas y Cabro", img: "https://placehold.co/600x400/D4AF7A/FFF?text=San+Gil", lat: 6.560, lng: -73.135, descripcion: "Aventura y tradición. Degusta hormigas culonas en la plaza principal." },
-    { nombre: "Málaga", plato: "Cabro con Pepitoria", img: "https://placehold.co/600x400/D4AF7A/FFF?text=Malaga", lat: 6.700, lng: -72.732, descripcion: "Capital de García Rovira, famosa por su cabro y pepitoria." },
-    { nombre: "El Socorro", plato: "Sancocho de Chorotas", img: "https://placehold.co/600x400/B58B5A/FFF?text=Socorro", lat: 6.468, lng: -73.260, descripcion: "Cuna de los comuneros. Sancocho de chorotas en el mercado campesino." },
+    { nombre: "Barichara", plato: "Carne Oreada y Guarapo", img: "imagenes/barichara.png", lat: 6.635, lng: -73.222, descripcion: "Patrimonio arquitectónico y gastronómico. Prueba la carne oreada en el mirador." },
+    { nombre: "San Gil", plato: "Hormigas Culonas y Cabro", img: "imagenes/san gil.png", lat: 6.560, lng: -73.135, descripcion: "Aventura y tradición. Degusta hormigas culonas en la plaza principal." },
+    { nombre: "Málaga", plato: "Cabro con Pepitoria", img: "imagenes/malaga.png", lat: 6.700, lng: -72.732, descripcion: "Capital de García Rovira, famosa por su cabro y pepitoria." },
+    { nombre: "El Socorro", plato: "Sancocho de Chorotas", img: "imagenes/socorro.png", lat: 6.468, lng: -73.260, descripcion: "Cuna de los comuneros. Sancocho de chorotas en el mercado campesino." },
     { nombre: "Vélez", plato: "Bocadillo Veleño", img: "https://placehold.co/600x400/AA7C4A/FFF?text=Velez", lat: 6.010, lng: -73.676, descripcion: "Cuna del bocadillo. Visita las fábricas artesanales." },
     { nombre: "Matanza", plato: "Mute Santandereano", img: "https://placehold.co/600x400/C86A4A/FFF?text=Matanza", lat: 7.321, lng: -72.998, descripcion: "Capital de Soto Norte. El mejor mute tradicional." },
     { nombre: "Floridablanca", plato: "Obleas Florideñas", img: "https://placehold.co/600x400/DEB887/FFF?text=Floridablanca", lat: 7.074, lng: -73.097, descripcion: "Ciudad Dulce de Colombia. Calle Dulce y obleas con nombres románticos." }
