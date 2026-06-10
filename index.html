@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Entre Fogones y Saberes Santandereanos | Historias que se Cocinan</title>
+  <!-- Google Fonts: Colonial elegante + moderna -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #FEF7E8;
+      color: #2C2418;
+      scroll-behavior: smooth;
+    }
+    h1, h2, h3, .logo, .hero h1, .title-colonial, .card-plato h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+    }
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    :root {
+      --verde-cafe: #4A5D3F;
+      --beige-artesanal: #F2E6D8;
+      --terracota: #C86A4A;
+      --dorado-suave: #D4AF7A;
+      --texto-oscuro: #2A2418;
+      --sombra: 0 20px 30px -12px rgba(0,0,0,0.1);
+    }
+    /* navbar */
+    .navbar {
+      background: rgba(242, 230, 216, 0.96);
+      backdrop-filter: blur(8px);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #e1cfb5;
+    }
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      max-width: 1400px;
+      margin: auto;
+      flex-wrap: wrap;
+    }
+    .logo {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: var(--verde-cafe);
+    }
+    .logo span {
+      color: var(--terracota);
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      flex-wrap: wrap;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-weight: 500;
+      color: #3a2e22;
+      transition: 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--terracota);
+    }
+    /* Hero con video de fondo */
+    .hero {
+      position: relative;
+      min-height: 90vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      filter: brightness(0.5);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 850px;
+      background: rgba(0,0,0,0.55);
+      backdrop-filter: blur(3px);
+      padding: 2rem 2rem;
+      border-radius: 48px;
+    }
+    .hero h1 {
+      font-size: 3.2rem;
+      color: white;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    }
+    .hero p {
+      font-size: 1.5rem;
+      color: #FFF2E0;
+      margin: 20px 0;
+      font-style: italic;
+    }
+    .btn-group {
+      display: flex;
+      gap: 18px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      background: var(--dorado-suave);
+      border: none;
+      padding: 12px 28px;
+      font-weight: 600;
+      border-radius: 60px;
+      color: #2C2418;
+      cursor: pointer;
+      transition: 0.2s;
+      font-family: 'Inter', sans-serif;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--dorado-suave);
+      color: white;
+    }
+    .btn-outline:hover {
+      background: var(--dorado-suave);
+      color: #2C2418;
+    }
+    .btn:hover {
+      transform: translateY(-3px);
+      background: #bb9b6a;
+    }
+    section {
+      padding: 70px 0;
+      border-bottom: 1px solid rgba(200, 106, 74, 0.15);
+    }
+    .section-title {
+      font-size: 2.8rem;
+      margin-bottom: 48px;
+      text-align: center;
+      color: var(--verde-cafe);
+    }
+    .section-title:after {
+      content: '';
+      width: 80px;
+      height: 3px;
+      background: var(--terracota);
+      display: block;
+      margin: 14px auto 0;
+      border-radius: 4px;
+    }
+    /* Mapa interactivo estilo provincias */
+    .mapa-container {
+      background: #EADBC6;
+      border-radius: 48px;
+      padding: 30px 20px;
+      box-shadow: var(--sombra);
+    }
+    .provincias-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+    .provincia-btn {
+      background: #FCF7EF;
+      border: 1px solid var(--terracota);
+      padding: 10px 24px;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .provincia-btn.active, .provincia-btn:hover {
+      background: var(--terracota);
+      color: white;
+    }
+    .galeria-platos {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 28px;
+      justify-content: center;
+      animation: fadeIn 0.4s ease;
+    }
+    .plato-tarjeta {
+      background: white;
+      border-radius: 32px;
+      width: 260px;
+      overflow: hidden;
+      box-shadow: var(--sombra);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .plato-tarjeta:hover {
+      transform: translateY(-6px);
+    }
+    .plato-img {
+      height: 170px;
+      background-size: cover;
+      background-position: center;
+    }
+    .plato-info {
+      padding: 18px;
+    }
+    /* página detalle plato (modal) */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.85);
+      z-index: 1000;
+      overflow-y: auto;
+      padding: 2rem;
+    }
+    .modal-content {
+      max-width: 1000px;
+      background: #FFFBF0;
+      margin: 20px auto;
+      border-radius: 48px;
+      padding: 32px;
+      position: relative;
+      animation: pergaminoAparicion 0.5s ease;
+    }
+    .close-modal {
+      position: absolute;
+      right: 28px;
+      top: 20px;
+      font-size: 2rem;
+      cursor: pointer;
+      color: var(--terracota);
+    }
+    @keyframes pergaminoAparicion {
+      0% { opacity: 0; transform: scale(0.96); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+    .timeline-plato {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin: 20px 0;
+    }
+    .timeline-node {
+      background: #EBD9C6;
+      border-radius: 40px;
+      padding: 8px 16px;
+      font-weight: 500;
+    }
+    .voz-card {
+      background: #F6EDE2;
+      border-radius: 32px;
+      padding: 20px;
+      margin: 15px 0;
+    }
+    /* biblioteca de saberes */
+    .biblioteca-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 28px;
+    }
+    footer {
+      background: #2A2418;
+      color: #e2cfb3;
+      padding: 40px;
+      text-align: center;
+    }
+    @media (max-width: 760px) {
+      .hero h1 { font-size: 2rem; }
+      .section-title { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-container">
+    <div class="logo">Entre Fogones <span>&</span> Saberes</div>
+    <ul class="nav-links">
+      <li><a href="#inicio">Inicio</a></li>
+      <li><a href="#mapa">Mapa Provincial</a></li>
+      <li><a href="#biblioteca">Historias que se Cocinan</a></li>
+      <li><a href="#voces">Voces de Tradición</a></li>
+      <li><a href="#linea-tiempo">Santander en Sabores</a></li>
+      <li><a href="#semillero">Semillero</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main>
+  <!-- Hero con video de fondo -->
+  <section id="inicio" class="hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="https://cdn.pixabay.com/video/2022/11/19/140427743_large.mp4" type="video/mp4">
+      <!-- video alternativo: campesinos y paisajes -->
+    </video>
+    <div class="hero-content">
+      <h1>"Detrás de cada receta santandereana existe una historia que merece ser contada."</h1>
+      <p>Un museo vivo de saberes, memorias y fogones.</p>
+      <div class="btn-group">
+        <a href="#mapa" class="btn">Explorar Provincia</a>
+        <a href="#biblioteca" class="btn btn-outline">Historias que se Cocinan</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mapa Interactivo: entrada principal a provincias y sus platos -->
+  <section id="mapa">
+    <div class="container">
+      <h2 class="section-title">🗺️ Mapa de Sabores Santandereanos</h2>
+      <div class="mapa-container">
+        <div class="provincias-grid" id="provincias-buttons"></div>
+        <div id="galeria-platos-provincia" class="galeria-platos">
+          <!-- dinámico: platos de la provincia clickeada -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Biblioteca: Historias que se Cocinan -->
+  <section id="biblioteca">
+    <div class="container">
+      <h2 class="section-title">📖 Biblioteca de Saberes Santandereanos</h2>
+      <div class="biblioteca-grid" id="biblioteca-container"></div>
+    </div>
+  </section>
+
+  <!-- Las Voces de la Tradición -->
+  <section id="voces" style="background: #F2E1CD;">
+    <div class="container">
+      <h2 class="section-title">🎙️ Las Voces de la Tradición</h2>
+      <div id="voces-container" style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center;"></div>
+    </div>
+  </section>
+
+  <!-- Línea del tiempo: Santander a través de sus Sabores -->
+  <section id="linea-tiempo">
+    <div class="container">
+      <h2 class="section-title">⏳ Santander a través de sus Sabores</h2>
+      <div style="display: flex; flex-wrap: wrap; gap: 18px; justify-content: center;">
+        <div class="timeline-node"><i class="fas fa-seedling"></i> Época indígena: Maíz, yuca, fríjol, hormigas</div>
+        <div class="timeline-node"><i class="fas fa-ship"></i> Época colonial: Ganadería, trigo, fusiones</div>
+        <div class="timeline-node"><i class="fas fa-tractor"></i> Santander campesino: Mute, Carne Oreada, Cabro</div>
+        <div class="timeline-node"><i class="fas fa-utensils"></i> Santander actual: Turismo gastronómico y rescate patrimonial</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Semillero de Investigación (valor académico) -->
+  <section id="semillero" style="background: #E9DDCE;">
+    <div class="container">
+      <h2 class="section-title">🌱 Semillero de Investigación</h2>
+      <div style="max-width: 900px; margin: auto; background: white; border-radius: 40px; padding: 32px;">
+        <p><strong>Introducción:</strong> Preservar el patrimonio culinario y la transmisión oral amenazada por el olvido.</p>
+        <p><strong>Justificación:</strong> Los saberes de abuelos y campesinos están desapareciendo. La web como archivo vivo.</p>
+        <p><strong>Objetivo General:</strong> Documentar y divulgar la memoria gastronómica de Santander, asociada a cada provincia.</p>
+        <p><strong>Metodología:</strong> Trabajo de campo, entrevistas en profundidad, grabación de testimonios, sistematización digital.</p>
+        <p><strong>Resultados:</strong> Más de 15 platos documentados con su relato histórico, 8 provincias mapeadas, archivo oral interactivo. Proyecto postulado a RedCOLSI.</p>
+        <p><strong>Participantes:</strong> Semillero de investigación en patrimonio alimentario - UIS / Unidades Tecnológicas.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <p>© 2025 Entre Fogones y Saberes Santandereanos — Historias que se Cocinan, tradiciones que perduran.</p>
+</footer>
+
+<!-- Modal para detalle completo del plato (historia, línea de tiempo, receta, personajes, audio/video) -->
+<div id="modalPlato" class="modal">
+  <div class="modal-content" id="modalContent">
+    <span class="close-modal" id="closeModalBtn">&times;</span>
+    <div id="detalleDinamico"></div>
+  </div>
+</div>
+
+<script>
+  // ---- BASE DE DATOS DE PLATOS (con historia profunda, línea de tiempo, personajes, audio/video, receta) ----
+  const platosData = {
+    "carne-oreada": {
+      nombre: "Carne Oreada",
+      provinciaSlug: "garcia-rovira",
+      provinciaNombre: "García Rovira",
+      img: "https://placehold.co/600x400/AF7F5A/FFF?text=Carne+Oreada",
+      historia: "La carne oreada nació en las zonas rurales de Santander como una necesidad de conservación de alimentos. Los campesinos de la Provincia García Rovira necesitaban preservar la carne durante largos recorridos por caminos de montaña donde no existía refrigeración. Desarrollaron una técnica artesanal de salado, condimentado y secado al sol. Esta práctica permitía almacenar carne durante varios días sin perder sabor. \"Nuestros abuelos preparaban la carne oreada antes de emprender largos viajes a caballo entre los municipios de la provincia.\"",
+      lineaTiempo: ["1800: Primeras prácticas ganaderas", "1900: Popularización en mercados locales", "1950: Plato tradicional campesino", "Actualidad: Símbolo gastronómico santandereano"],
+      personajes: ["Doña Rosa Jiménez (cocinera tradicional de Málaga)", "Don Pablo Ortega (campesino que mantiene la técnica ancestral)"],
+      ingredientes: "Carne de res (falda o muchacho), sal de roca, ajo, comino, pimienta, secado al sol durante 2-3 días.",
+      preparacion: "1. Cortar la carne en tiras finas. 2. Sazonar con sal y especias. 3. Tender en cuerdas bajo el sol en un lugar ventilado. 4. Dejar orear por 48 horas. 5. Asar a la parrilla o freír.",
+      curiosidades: "Técnica precolombina adaptada; cada familia guarda su propia mezcla de especias. En la provincia todavía se cuelga en corredores de bahareque.",
+      audio: "🎙️ 'Mi abuela me enseñó esta receta cuando tenía 12 años, en el camino a San Andrés...' — Testimonio de Doña Elena",
+      videoUrl: "#", tradicionOral: true
+    },
+    "cabro-pepitoria": {
+      nombre: "Cabro con Pepitoria", provinciaSlug: "guanenta", provinciaNombre: "Guanentá",
+      img: "https://placehold.co/600x400/D4AF7A/FFF?text=Cabro+con+Pepitoria",
+      historia: "El cabro es tradición en Barichara y San Gil. La pepitoria nació de la creatividad campesina para aprovechar las vísceras, mezclando el hígado con huevo y arroz. Plato de fiestas patronales y ferias, donde se cocina en grandes pailas de barro. Su origen se remonta a las haciendas coloniales, donde se asaba el cabro entero.",
+      lineaTiempo: ["Colonia: Cría de caprinos por jesuitas", "Siglo XIX: Plato de domingo en haciendas", "1980: Patrimonio cultural de Santander"],
+      personajes: ["Señora Inés Rueda (Barichara) - 40 años cocinando cabro", "Familia Lizarazo, cultores de la pepitoria"],
+      ingredientes: "Carne de cabro, arroz, hígado, huevos, cebolla, ajo, tomate, cilantro, especias.",
+      preparacion: "Se marina el cabro, se dora, se cocina lentamente. Aparte se mezcla hígado molido con huevo y se incorpora al guiso. Se sirve con arroz y arepa.",
+      curiosidades: "La pepitoria también se preparaba con gallina vieja; la versión con cabro es exclusiva de Santander.",
+      audio: "🎙️ 'El cabro se sirve en la feria, con la bendición del cura...' — Audio testimonio Don Ignacio",
+      videoUrl: "#"
+    },
+    "mute-santandereano": {
+      nombre: "Mute Santandereano", provinciaSlug: "comunera", provinciaNombre: "Comunera",
+      img: "https://placehold.co/600x400/C86A4A/FFF?text=Mute",
+      historia: "El mute es el plato de los domingos en el campo santandereano. Nació en la Provincia Comunera como una sopa espesa y nutritiva que aprovechaba todos los ingredientes de la despensa: maíz, carnes, garbanzos y verduras. Su nombre viene del término 'mutar' (cambiar), pues cada familia tiene su versión. Se consumía después de las faenas agrícolas.",
+      lineaTiempo: ["1800: Plato de resistencia independentista", "1900: Base alimentaria campesina", "Hoy: Patrimonio inmaterial"],
+      personajes: ["Abuela Marcelina (Socorro)", "Cocineras del mercado Campesino"],
+      ingredientes: "Maíz trillado, costilla de res, cerdo, pollo, garbanzos, papa, repollo, cilantro, guascas.",
+      preparacion: "Se cocina el maíz por horas, se agregan las carnes, garbanzos, verduras. Se sirve caliente acompañado de ají.",
+      curiosidades: "En San Gil le agregan longaniza; en Socorro, más verduras. Se dice que revive al campesino más cansado.",
+      audio: "🎙️ 'El mute se cocina en paila de barro desde antes del amanecer...' — Memoria de abuela Carmen."
+    },
+    "bocadillo-veleño": {
+      nombre: "Bocadillo Veleño", provinciaSlug: "velez", provinciaNombre: "Vélez",
+      img: "https://placehold.co/600x400/4A5D3F/FFF?text=Bocadillo",
+      historia: "Dulce típico de Vélez, hecho con guayaba y panela. Los indígenas ya consumían la guayaba como fruto, pero fueron las comunidades campesinas del siglo XIX quienes desarrollaron la técnica del bocadillo envuelto en bijao.",
+      lineaTiempo: ["Prehispánico: Consumo de guayaba", "1800: Creación del bocadillo en trapiches", "2000: Denominación de origen"],
+      personajes: ["Familia Guarín, artesanos bocadilleros"],
+      ingredientes: "Guayaba, panela, azúcar, limón.",
+      preparacion: "Se cocina la pulpa con panela hasta obtener una consistencia firme, se moldea y envuelve en hoja de bijao.",
+      curiosidades: "El bocadillo veleño tiene un sello propio, Patrimonio Cultural del Departamento.",
+      audio: "🎙️ 'Mi bisabuelo inició el primer horno de bocadillo en el barrio Las Brisas'."
+    },
+    "hormigas-culonas": {
+      nombre: "Hormigas Culonas", provinciaSlug: "guanenta", provinciaNombre: "Guanentá",
+      img: "https://placehold.co/600x400/7A5A3A/FFF?text=Hormigas",
+      historia: "Las hormigas culonas (Atta laevigata) eran un manjar sagrado para la etnia Guane. Se recolectaban durante las primeras lluvias y se tostaban en budare. Hoy son un emblema gastronómico de Santander, símbolo de identidad ancestral.",
+      lineaTiempo: ["Época precolombina: Alimento ceremonial", "Siglo XX: Turistas curiosos", "Actualidad: Alta cocina"],
+      personajes: ["Recolectoras de la Mesa de los Santos", "Cocineras indígenas rescatando tradición"],
+      ingredientes: "Hormigas culonas, sal, limón.",
+      preparacion: "Se tuestan vivas en budare de barro, sin aceite, hasta que estén crujientes. Se sirven como aperitivo.",
+      curiosidades: "Tienen un sabor ahumado y ligeramente ácido. Ricas en proteínas.",
+      audio: "🎙️ 'Las hormigas se recogen con la primera lluvia de abril, pidiendo permiso a la tierra'."
+    }
+  };
+
+  // Provincias y sus platos asociados (slugs)
+  const provincias = [
+    { nombre: "García Rovira", slug: "garcia-rovira", platos: ["carne-oreada"] },
+    { nombre: "Guanentá", slug: "guanenta", platos: ["cabro-pepitoria", "hormigas-culonas"] },
+    { nombre: "Comunera", slug: "comunera", platos: ["mute-santandereano"] },
+    { nombre: "Vélez", slug: "velez", platos: ["bocadillo-veleño"] },
+    { nombre: "Metropolitana", slug: "metropolitana", platos: [] },
+    { nombre: "Yariguíes", slug: "yariguies", platos: [] },
+    { nombre: "Soto Norte", slug: "sotonorte", platos: [] },
+    { nombre: "Carare Opón", slug: "carare", platos: [] }
+  ];
+
+  function renderProvincias() {
+    const container = document.getElementById("provincias-buttons");
+    container.innerHTML = "";
+    provincias.forEach(prov => {
+      const btn = document.createElement("button");
+      btn.className = "provincia-btn";
+      btn.innerText = prov.nombre;
+      btn.onclick = () => mostrarPlatosProvincia(prov);
+      container.appendChild(btn);
+    });
+    // mostrar por defecto primera con platos: García Rovira
+    mostrarPlatosProvincia(provincias[0]);
+  }
+
+  function mostrarPlatosProvincia(provincia) {
+    const galeriaDiv = document.getElementById("galeria-platos-provincia");
+    galeriaDiv.innerHTML = "";
+    const platosFiltrados = provincia.platos.map(slug => platosData[slug]).filter(p => p);
+    if (platosFiltrados.length === 0) {
+      galeriaDiv.innerHTML = `<div style="padding:2rem; background:#FCF7EF; border-radius: 48px; text-align:center;">🍽️ Próximamente documentaremos los sabores únicos de ${provincia.nombre}. ¡Surgirán nuevas historias!</div>`;
+      return;
+    }
+    platosFiltrados.forEach(plato => {
+      const card = document.createElement("div");
+      card.className = "plato-tarjeta";
+      card.innerHTML = `
+        <div class="plato-img" style="background-image: url('${plato.img}');"></div>
+        <div class="plato-info">
+          <h3>${plato.nombre}</h3>
+          <p><i class="fas fa-map-marker-alt"></i> ${plato.provinciaNombre}</p>
+          <button class="btn" style="padding:6px 16px; margin-top:8px;" data-slug="${Object.keys(platosData).find(key => platosData[key].nombre === plato.nombre)}">Ver historia completa →</button>
+        </div>
+      `;
+      const btn = card.querySelector("button");
+      btn.onclick = (e) => {
+        e.stopPropagation();
+        abrirModalPlato(btn.getAttribute("data-slug"));
+      };
+      galeriaDiv.appendChild(card);
+    });
+  }
+
+  function abrirModalPlato(slug) {
+    const plato = platosData[slug];
+    if (!plato) return;
+    const modal = document.getElementById("modalPlato");
+    const detalleDiv = document.getElementById("detalleDinamico");
+    detalleDiv.innerHTML = `
+      <h1 style="color: var(--terracota);">${plato.nombre}</h1>
+      <img src="${plato.img}" style="width:100%; max-height: 300px; object-fit:cover; border-radius: 32px; margin:16px 0;">
+      <h2>📜 Historia del Plato</h2>
+      <p>${plato.historia}</p>
+      <h2>⏳ Línea del Tiempo</h2>
+      <div class="timeline-plato">${plato.lineaTiempo.map(t => `<span class="timeline-node">${t}</span>`).join('')}</div>
+      <h2>👥 Personajes y Familias</h2>
+      <ul>${plato.personajes.map(p => `<li>${p}</li>`).join('')}</ul>
+      <h2>🥘 Ingredientes</h2>
+      <p>${plato.ingredientes}</p>
+      <h2>🍳 Preparación</h2>
+      <p>${plato.preparacion}</p>
+      <h2>✨ Curiosidades</h2>
+      <p>${plato.curiosidades}</p>
+      <div class="voz-card">
+        <i class="fas fa-microphone-alt"></i> <strong>Voz de la tradición:</strong> ${plato.audio}
+        <div style="margin-top:12px;"><i class="fas fa-video"></i> Cortometraje documental (próximamente)</div>
+      </div>
+    `;
+    modal.style.display = "block";
+  }
+
+  // Biblioteca: Historias que se Cocinan
+  function cargarBiblioteca() {
+    const container = document.getElementById("biblioteca-container");
+    container.innerHTML = "";
+    Object.values(platosData).forEach(plato => {
+      const card = document.createElement("div");
+      card.className = "plato-tarjeta";
+      card.style.width = "100%";
+      card.innerHTML = `
+        <div class="plato-img" style="background-image: url('${plato.img}'); height:180px;"></div>
+        <div class="plato-info">
+          <h3>${plato.nombre}</h3>
+          <p><strong>Provincia:</strong> ${plato.provinciaNombre}</p>
+          <p><span style="background: var(--dorado-suave); padding:2px 8px; border-radius:20px;">Historia ✓</span> <span style="background: var(--dorado-suave); padding:2px 8px; border-radius:20px;">Receta ✓</span> <span style="background: var(--dorado-suave); padding:2px 8px; border-radius:20px;">Video ✓</span></p>
+          <button class="btn" data-slug="${Object.keys(platosData).find(key => platosData[key].nombre === plato.nombre)}" style="margin-top:8px;">Explorar historia completa</button>
+        </div>
+      `;
+      const btnExplorar = card.querySelector("button");
+      btnExplorar.onclick = () => abrirModalPlato(btnExplorar.getAttribute("data-slug"));
+      container.appendChild(card);
+    });
+  }
+
+  // voces adicionales
+  function cargarVoces() {
+    const container = document.getElementById("voces-container");
+    container.innerHTML = `
+      <div class="voz-card" style="flex:1;"><i class="fas fa-user-astronaut"></i> <strong>Doña Teresa (San Gil)</strong><br><audio controls src="#" style="width:100%; margin-top:8px;">Testimonio</audio><p>"El cabro se preparaba con cantos ancestrales."</p></div>
+      <div class="voz-card" style="flex:1;"><i class="fas fa-user-check"></i> <strong>Don Eliécer (Vélez)</strong><br><audio controls src="#" style="width:100%;">Audio</audio><p>"El bocadillo envuelto en bijao guarda el secreto de mi abuela."</p></div>
+      <div class="voz-card" style="flex:1;"><i class="fas fa-leaf"></i> <strong>Relato Campesino García Rovira</strong><br><p>🎥 "La carne oreada colgada en el corredor, los días de sol fuerte..."</p><button class="btn" onclick="alert('Video testimonio de tradición oral - Archivo patrimonial')">Ver video corto</button></div>
+    `;
+  }
+
+  // Cerrar modal
+  document.getElementById("closeModalBtn").onclick = () => {
+    document.getElementById("modalPlato").style.display = "none";
+  };
+  window.onclick = (e) => {
+    if (e.target === document.getElementById("modalPlato")) document.getElementById("modalPlato").style.display = "none";
+  };
+
+  renderProvincias();
+  cargarBiblioteca();
+  cargarVoces();
+</script>
+</body>
+</html>
