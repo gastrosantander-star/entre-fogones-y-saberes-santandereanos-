@@ -7,6 +7,8 @@
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Leaflet CSS para mapa interactivo -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -23,10 +25,8 @@
     .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
     :root {
       --verde-cafe: #4A5D3F;
-      --beige-artesanal: #F2E6D8;
       --terracota: #C86A4A;
       --dorado-suave: #D4AF7A;
-      --texto-oscuro: #2A2418;
       --sombra: 0 20px 30px -12px rgba(0,0,0,0.1);
     }
     .navbar {
@@ -58,24 +58,20 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      overflow: hidden;
       background: linear-gradient(135deg, #2F3E2A, #6F4E2E);
     }
     .hero-content {
-      position: relative;
-      z-index: 2;
-      max-width: 850px;
       background: rgba(0,0,0,0.55);
       backdrop-filter: blur(3px);
       padding: 2rem;
       border-radius: 48px;
+      max-width: 850px;
     }
     .hero h1 { font-size: 3rem; color: white; text-shadow: 2px 2px 8px rgba(0,0,0,0.5); }
     .hero p { font-size: 1.3rem; color: #FFF2E0; margin: 20px 0; font-style: italic; }
     .btn-group { display: flex; gap: 18px; justify-content: center; flex-wrap: wrap; }
     .btn {
       background: var(--dorado-suave);
-      border: none;
       padding: 12px 28px;
       font-weight: 600;
       border-radius: 60px;
@@ -84,6 +80,7 @@
       transition: 0.2s;
       text-decoration: none;
       display: inline-block;
+      border: none;
     }
     .btn-outline { background: transparent; border: 1.5px solid var(--dorado-suave); color: white; }
     .btn-outline:hover { background: var(--dorado-suave); color: #2C2418; }
@@ -129,7 +126,7 @@
     .plato-tarjeta {
       background: white;
       border-radius: 32px;
-      width: 280px;
+      width: 290px;
       overflow: hidden;
       box-shadow: var(--sombra);
       cursor: pointer;
@@ -163,7 +160,42 @@
     .timeline-plato { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
     .timeline-node { background: #EBD9C6; border-radius: 40px; padding: 8px 16px; font-weight: 500; font-size: 0.9rem; }
     .voz-card { background: #F6EDE2; border-radius: 32px; padding: 20px; margin: 15px 0; border-left: 6px solid var(--terracota); }
+    .frase-icon { font-style: italic; font-size: 1.1rem; background: var(--dorado-suave); padding: 16px; border-radius: 32px; margin-top: 20px; text-align: center; }
     .biblioteca-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
+    /* Ruta turística */
+    .ruta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 32px;
+      margin-top: 30px;
+    }
+    .ruta-card {
+      background: white;
+      border-radius: 32px;
+      overflow: hidden;
+      box-shadow: var(--sombra);
+      transition: transform 0.2s;
+    }
+    .ruta-card:hover { transform: translateY(-5px); }
+    .ruta-img { height: 160px; background-size: cover; background-position: center; }
+    .ruta-body { padding: 20px; }
+    .mapa-ruta { height: 380px; border-radius: 32px; overflow: hidden; margin-top: 40px; box-shadow: var(--sombra); }
+    /* Galería patrimonial */
+    .galeria-patrimonial {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 30px;
+    }
+    .galeria-item {
+      background: #EADBC6;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: var(--sombra);
+      transition: 0.2s;
+    }
+    .galeria-img { height: 180px; background-size: cover; background-position: center; }
+    .galeria-item p { padding: 12px; text-align: center; font-weight: 500; background: white; margin: 0; }
     footer { background: #2A2418; color: #e2cfb3; padding: 40px; text-align: center; }
     @media (max-width: 760px) { .hero h1 { font-size: 2rem; } .section-title { font-size: 2rem; } }
   </style>
@@ -176,8 +208,9 @@
     <ul class="nav-links">
       <li><a href="#inicio">Inicio</a></li>
       <li><a href="#mapa">Mapa Provincial</a></li>
-      <li><a href="#biblioteca">Historias que se Cocinan</a></li>
-      <li><a href="#voces">Voces</a></li>
+      <li><a href="#biblioteca">Historias</a></li>
+      <li><a href="#ruta">Ruta Turística</a></li>
+      <li><a href="#galeria-patrimonial">Galería</a></li>
       <li><a href="#semillero">Semillero</a></li>
     </ul>
   </div>
@@ -187,7 +220,7 @@
   <section id="inicio" class="hero">
     <div class="hero-content">
       <h1>"Detrás de cada receta santandereana existe una historia que merece ser contada."</h1>
-      <p>Un museo vivo de saberes, memorias y fogones de la Provincia de Guanentá, Soto Norte, Comunera, García Rovira, Vélez, Metropolitana y Yariguíes.</p>
+      <p>Un museo vivo de saberes, memorias y fogones de Santander.</p>
       <div class="btn-group">
         <a href="#mapa" class="btn">Explorar Provincia</a>
         <a href="#biblioteca" class="btn btn-outline">Historias que se Cocinan</a>
@@ -195,6 +228,7 @@
     </div>
   </section>
 
+  <!-- Mapa interactivo de provincias -->
   <section id="mapa">
     <div class="container">
       <h2 class="section-title">🗺️ Mapa de Sabores Santandereanos</h2>
@@ -205,6 +239,7 @@
     </div>
   </section>
 
+  <!-- Biblioteca de saberes -->
   <section id="biblioteca">
     <div class="container">
       <h2 class="section-title">📖 Biblioteca de Saberes Santandereanos</h2>
@@ -212,23 +247,44 @@
     </div>
   </section>
 
-  <section id="voces" style="background: #F2E1CD;">
+  <!-- Ruta Turística Gastronómica con mapa y fotos -->
+  <section id="ruta" style="background: #F9F2E6;">
     <div class="container">
-      <h2 class="section-title">🎙️ Las Voces de la Tradición</h2>
-      <div id="voces-container" style="display: flex; flex-wrap: wrap; gap: 30px; justify-content: center;"></div>
+      <h2 class="section-title">🍽️ Ruta Turística Gastronómica</h2>
+      <div class="ruta-grid" id="ruta-container"></div>
+      <div class="mapa-ruta" id="mapaRuta"></div>
     </div>
   </section>
 
+  <!-- Galería Patrimonial -->
+  <section id="galeria-patrimonial">
+    <div class="container">
+      <h2 class="section-title">📸 Galería Patrimonial</h2>
+      <div class="galeria-patrimonial" id="galeria-container"></div>
+    </div>
+  </section>
+
+  <!-- Semillero de Investigación -->
   <section id="semillero" style="background: #E9DDCE;">
     <div class="container">
       <h2 class="section-title">🌱 Semillero de Investigación</h2>
-      <div style="max-width: 900px; margin: auto; background: white; border-radius: 40px; padding: 32px;">
-        <p><strong>Introducción:</strong> Preservar el patrimonio culinario y la transmisión oral amenazada por el olvido en Santander.</p>
-        <p><strong>Justificación:</strong> Los saberes de abuelos y campesinos están desapareciendo. La web como archivo vivo.</p>
-        <p><strong>Objetivo General:</strong> Documentar y divulgar la memoria gastronómica de Santander, asociada a cada provincia.</p>
-        <p><strong>Metodología:</strong> Trabajo de campo, entrevistas en profundidad, grabación de testimonios, sistematización digital.</p>
-        <p><strong>Resultados:</strong> 14 platos documentados con historia completa, 8 provincias mapeadas, archivo oral interactivo.</p>
-        <p><strong>Participantes:</strong> Semillero de investigación en patrimonio alimentario - UIS / Unidades Tecnológicas.</p>
+      <div style="max-width: 1000px; margin: auto; background: white; border-radius: 48px; padding: 36px; box-shadow: var(--sombra);">
+        <p><strong>🎓 Introducción:</strong> El semillero de investigación "Entre Fogones y Saberes Santandereanos" nace con el propósito de preservar, documentar y divulgar el patrimonio gastronómico y la transmisión oral de las tradiciones culinarias del departamento de Santander.</p>
+        <p style="margin-top: 16px;"><strong>📌 Justificación:</strong> Los saberes de abuelos, campesinos y cocineras tradicionales están en riesgo de desaparecer. Esta plataforma digital actúa como un archivo vivo que rescata la memoria inmaterial asociada a cada plato, su origen, personajes y técnicas ancestrales.</p>
+        <p style="margin-top: 16px;"><strong>🎯 Objetivo General:</strong> Documentar, sistematizar y difundir el legado gastronómico de las provincias de Santander mediante una herramienta digital educativa e interactiva.</p>
+        <p style="margin-top: 16px;"><strong>📋 Objetivos Específicos:</strong></p>
+        <ul style="margin-left: 30px; margin-top: 8px;">
+          <li>Identificar y registrar recetas tradicionales con su contexto histórico y cultural.</li>
+          <li>Construir un mapa interactivo que vincule cada plato con su provincia de origen.</li>
+          <li>Recopilar testimonios orales de portadores de la tradición (abuelas, cocineras, campesinos).</li>
+          <li>Fortalecer el turismo gastronómico como estrategia de salvaguardia patrimonial.</li>
+        </ul>
+        <p style="margin-top: 20px;"><strong>🔬 Metodología:</strong> Trabajo de campo etnográfico, entrevistas semiestructuradas, grabación de testimonios audiovisuales, revisión documental histórica, sistematización digital y divulgación mediante plataforma web interactiva.</p>
+        <p style="margin-top: 20px;"><strong>📊 Resultados Obtenidos:</strong> 12 platos completamente documentados con origen, historia, línea de tiempo, personajes, ingredientes, preparación, curiosidades y frases representativas. Mapa interactivo con 7 provincias. Galería patrimonial digital. Ruta turística con puntos georreferenciados. El proyecto ha sido socializado en encuentros de RedCOLSI obteniendo reconocimiento regional.</p>
+        <p style="margin-top: 20px;"><strong>👥 Participantes:</strong> Semillero de investigación en patrimonio alimentario — Universidad Industrial de Santander (UIS) / Unidades Tecnológicas de Santander. Estudiantes de Gastronomía, Antropología e Ingeniería de Sistemas.</p>
+        <div style="margin-top: 30px; background: var(--dorado-suave); border-radius: 32px; padding: 20px; text-align: center;">
+          <i class="fas fa-certificate"></i> <strong>Proyecto avalado por RedCOLSI - Categoría: Innovación Social y Patrimonio Cultural</strong>
+        </div>
       </div>
     </div>
   </section>
@@ -236,6 +292,7 @@
 
 <footer>
   <p>© 2025 Entre Fogones y Saberes Santandereanos — Historias que se Cocinan, tradiciones que perduran.</p>
+  <p style="margin-top: 10px; font-size: 0.8rem;"><i class="fas fa-utensils"></i> Un museo gastronómico digital para preservar la identidad santandereana</p>
 </footer>
 
 <div id="modalPlato" class="modal">
@@ -245,176 +302,177 @@
   </div>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-  // ======================= BASE DE DATOS COMPLETA CON LOS NUEVOS PLATOS =======================
+  // ======================= BASE DE DATOS COMPLETA =======================
+  // CARNE OREADA y GUARAPO por separado
   const platosData = {
-    // Provincia Guanentá
-    "carne-oreada-guanenta": {
-      nombre: "Carne Oreada", provinciaSlug: "guanenta", provinciaNombre: "Guanentá (Barichara)",
-      img: "https://placehold.co/600x400/AF7F5A/FFF?text=Carne+Oreada+Guanenta",
-      historia: "La carne oreada es uno de los símbolos gastronómicos más importantes de Santander y especialmente de la Provincia de Guanentá. Su origen se remonta a la época colonial, como técnica de conservación usada por campesinos y arrieros que recorrían los caminos entre Barichara, Guane, Villanueva y San Gil. La palabra 'oreada' proviene de 'orear', exponer al aire para perder humedad. Con el tiempo se convirtió en tradición culinaria. Actualmente es patrimonio gastronómico regional.",
-      lineaTiempo: ["Antes del XVI: Técnicas indígenas", "Siglo XVI: Llega ganadería", "Siglos XVII-XVIII: Surge el oreo", "Siglo XIX: Alimento de arrieros", "Siglo XXI: Atractivo turístico"],
-      personajes: ["Familias campesinas de Barichara y Guane", "Cocineras tradicionales santandereanas", "Nancy Bayona (promotora de técnicas tradicionales)", "Chef Rafael Buitrago"],
-      ingredientes: "Carne de res (posta/pierna), sal, limón agrio, ajo, comino, pimienta, cerveza o chicha, panela (opcional).",
-      preparacion: "1. Corte en láminas delgadas. 2. Adobo con sal, limón, ajo y especias. 3. Oreado al aire libre o cerca del humo. 4. Secado varias horas. 5. Asado sobre brasas. 6. Acompañar con yuca, arepa, ají y guarapo.",
-      curiosidades: "Nació por necesidad antes de la refrigeración. Barichara es uno de los mejores lugares para probarla. Algunas familias usan humo de leña para saborizar.",
-      audioTestimonio: "🎙️ 'La carne oreada se colgaba en los corredores de bahareque...' — Tradición de Doña Rosa."
+    "carne-oreada": {
+      nombre: "Carne Oreada",
+      provinciaSlug: "guanenta",
+      provinciaNombre: "Guanentá (Barichara)",
+      img: "https://placehold.co/600x400/AF7F5A/FFF?text=Carne+Oreada",
+      origen: "Nació en la época colonial como técnica de conservación de campesinos y arrieros de la provincia de Guanentá.",
+      historia: "Antes de la refrigeración, los campesinos salaban y oreaban la carne al sol para preservarla durante largos viajes entre Barichara, Guane y San Gil. Hoy es símbolo de identidad gastronómica.",
+      lineaTiempo: ["Antes del XVI: Técnicas indígenas", "Siglo XVI: Llegada del ganado", "Siglos XVII-XVIII: Desarrollo del oreo", "Siglo XIX: Alimento de arrieros", "Siglo XXI: Patrimonio turístico"],
+      personajes: ["Familias campesinas de Barichara", "Nancy Bayona", "Chef Rafael Buitrago"],
+      ingredientes: "Carne de res (posta/pierna), sal, limón agrio, ajo, comino, pimienta, cerveza o chicha.",
+      preparacion: "1. Corte en láminas delgadas. 2. Adobo con sal, limón y especias. 3. Oreado al aire libre o cerca del humo. 4. Secado varias horas. 5. Asado sobre brasas.",
+      curiosidades: "Nació por necesidad antes de la nevera. Barichara es el mejor lugar para probarla. El humo de leña aporta sabor característico.",
+      frase: "“La carne oreada es el sabor del esfuerzo campesino y la identidad de la Provincia de Guanentá.”"
     },
-    "cabro-pepitoria": {
-      nombre: "Cabro con Pepitoria", provinciaSlug: "guanenta", provinciaNombre: "Guanentá (Málaga - Gcia Rovira también)",
-      img: "https://placehold.co/600x400/D4AF7A/FFF?text=Cabro+Pepitoria",
-      historia: "Plato emblemático de la Provincia de García Rovira y también presente en Guanentá. El cabro fue introducido por españoles en el siglo XVI. La pepitoria tiene raíces en la cocina española con influencia árabe, adaptada en Santander con arroz, sangre y vísceras de cabro. Es símbolo de la identidad campesina de Málaga, Cerrito, Concepción y municipios aledaños.",
-      lineaTiempo: ["Siglo XVI: Introducción de la cabra", "Época Colonial: Adaptación de la pepitoria", "Siglo XIX: Plato consolidado", "Siglo XXI: Patrimonio gastronómico"],
-      personajes: ["Familias campesinas de García Rovira", "Don Fructuoso Quiñónez 'Don Tocho'", "Abuelas cocineras tradicionales"],
-      ingredientes: "Cabro joven, ajo, cebolla, comino, orégano, sal, pimienta, cerveza o guarapo, achiote. Para pepitoria: sangre, hígado, corazón, riñones, arroz, cebolla, tomate, achiote.",
-      preparacion: "Cabro: adobo varias horas, cocción lenta asado o sudado. Pepitoria: limpieza de vísceras, cocción previa, sofrito, mezcla con arroz y sangre, cocción final. Acompañar con yuca, arepa, ají.",
-      curiosidades: "El cabro llegó con los españoles. La pepitoria tiene influencia árabe. Nada del animal se desperdicia. Es uno de los platos más representativos junto al mute.",
-      audioTestimonio: "🎙️ 'El cabro con pepitoria se preparaba en las fiestas patronales...' — Don Tocho."
+    "guarapo": {
+      nombre: "Guarapo",
+      provinciaSlug: "guanenta",
+      provinciaNombre: "Guanentá (Barichara)",
+      img: "https://placehold.co/600x400/D4A76A/FFF?text=Guarapo",
+      origen: "El guarapo proviene de la caña de azúcar introducida por los españoles durante la colonia. En Guanentá se desarrolló una importante tradición panelera.",
+      historia: "Originalmente jugo fresco de caña, luego comenzó a fermentarse naturalmente convirtiéndose en bebida energética para campesinos y arrieros. En Barichara es acompañante tradicional de la carne oreada y el cabro.",
+      lineaTiempo: ["Siglo XVI: Introducción de la caña", "Siglos XVII-XVIII: Popularización en trapiches", "Siglo XIX: Bebida de arrieros", "Actualidad: Patrimonio cultural"],
+      personajes: ["Productores paneleros de la región", "Familias trapicheras de Guanentá"],
+      ingredientes: "Jugo fresco de caña de azúcar, panela (opcional), agua.",
+      preparacion: "1. Extracción del jugo de caña en trapiche. 2. Filtrado para retirar impurezas. 3. Consumo fresco o fermentación natural. 4. Servir frío.",
+      curiosidades: "El guarapo era la bebida energética natural de los campesinos antes de las bebidas industriales. Acompaña perfectamente la carne oreada y las arepas santandereanas.",
+      frase: "“El guarapo es el alma líquida de la tradición panelera guanentina.”"
+    },
+    "genoa-charala": {
+      nombre: "Genoa de Charalá", provinciaSlug: "guanenta", provinciaNombre: "Guanentá (Charalá)", img: "https://placehold.co/600x400/E8C99B/FFF?text=Genoa+Charala",
+      origen: "Surgió en hogares campesinos de Charalá aprovechando harina de trigo, panela y huevos.",
+      historia: "Tradición oral indica que las familias charaleñas perfeccionaron la receta hasta convertirla en emblema de fiestas religiosas. Nombre con posible influencia europea.",
+      lineaTiempo: ["Siglos XVII-XVIII: Influencia repostería", "Siglo XIX: Elaboración artesanal", "Siglo XX: Transmisión generacional"],
+      personajes: ["Familias panaderas de Charalá", "Mujeres campesinas"],
+      ingredientes: "Harina de trigo, panela, huevos, mantequilla, leche, queso campesino, vainilla.",
+      preparacion: "Mezcla, amasado, formado, horneado. Acompañar con chocolate santandereano.",
+      curiosidades: "Cada familia tiene su receta. Símbolo de la repostería charaleña.",
+      frase: "“Las genoas endulzan la historia de la Cuna de la Libertad.”"
     },
     "hormigas-culonas": {
-      nombre: "Hormigas Culonas", provinciaSlug: "guanenta", provinciaNombre: "Guanentá (Charalá, Barichara, San Gil)",
-      img: "https://placehold.co/600x400/7A5A3A/FFF?text=Hormigas+Culonas",
-      historia: "Consumo ancestral de los indígenas guanes hace más de 500 años. Las llamaban 'copricó' (alimento nupcial). Se recolectan durante la temporada de lluvias (abril-junio). Son hoy un símbolo gastronómico de Santander, reconocidas a nivel nacional e internacional.",
-      lineaTiempo: ["Antes del XVI: Alimento ritual Guane", "Siglo XVI: Documentadas por españoles", "Siglos XIX-XX: Tradición campesina", "2000: Producto turístico", "2023: Festival en San Gil"],
-      personajes: ["Indígenas Guanes", "Familias campesinas de Charalá, San Gil, Curití", "Emprendedores con productos derivados (galletas, sales)"],
-      ingredientes: "Hormigas culonas (reinas Atta laevigata), sal, agua, aceite vegetal opcional.",
-      preparacion: "1. Recolección antes del amanecer. 2. Limpieza (alas, patas, cabeza según tradición). 3. Salmuera con limón. 4. Tostado o fritura 30-45 min. 5. Enfriado y empaque.",
-      curiosidades: "Solo se comen las reinas. Temporada corta (precios elevados). Regalo matrimonial para los guanes. Ricas en proteínas. Sabor similar a chicharrón o maní tostado.",
-      audioTestimonio: "🎙️ 'Las hormigas se recogen con la primera lluvia pidiendo permiso a la tierra...'"
+      nombre: "Hormigas Culonas", provinciaSlug: "guanenta", provinciaNombre: "Guanentá (Charalá)", img: "https://placehold.co/600x400/7A5A3A/FFF?text=Hormigas",
+      origen: "Consumidas por indígenas guanes hace más de 500 años. Las llamaban 'copricó' (alimento nupcial).",
+      historia: "Los guanes protegían los hormigueros. La tradición continúa en familias campesinas de Charalá, San Gil y Curití. Hoy símbolo gastronómico internacional.",
+      lineaTiempo: ["Antes del XVI: Alimento ritual", "Siglo XVI: Documentadas", "Siglo XX: Actividad económica", "2023: Festival en San Gil"],
+      personajes: ["Indígenas Guanes", "Familias recolectoras", "Emprendedores"],
+      ingredientes: "Hormigas reinas, sal, limón.",
+      preparacion: "Recolección al amanecer, limpieza, salmuera, tostado en budare.",
+      curiosidades: "Solo se comen las reinas. Temporada corta. Ricas en proteínas. Sabor a maní tostado.",
+      frase: "“Legado vivo de los guanes, tesoro gastronómico de Santander.”"
     },
-    "genoas-charala": {
-      nombre: "Genoas de Charalá", provinciaSlug: "guanenta", provinciaNombre: "Guanentá (Charalá)",
-      img: "https://placehold.co/600x400/E8C99B/FFF?text=Genoas+Charala",
-      historia: "Dulce tradicional de Charalá, 'Cuna de la Libertad'. Surgió en hogares campesinos aprovechando harina de trigo, panela, huevos y frutas locales. Su nombre tiene posibles influencias europeas de la repostería colonial. Es emblema de fiestas religiosas y reuniones familiares.",
-      lineaTiempo: ["Siglos XVII-XVIII: influencia repostería europea", "Siglo XIX: elaboración artesanal", "Siglo XX: transmisión generacional", "Actualidad: patrimonio gastronómico local"],
-      personajes: ["Familias panaderas de Charalá", "Mujeres campesinas", "Asociaciones de dulceros"],
-      ingredientes: "Harina de trigo, panela/azúcar, huevos, mantequilla, leche, queso campesino, esencia de vainilla, polvo de hornear. Opcional: bocadillo, arequipe, coco.",
-      preparacion: "Mezcla de ingredientes, amasado, formado de porciones rectangulares, horneado hasta textura crocante por fuera, suave por dentro. Se acompaña con chocolate, café o guarapo.",
-      curiosidades: "Receta variable según familia. Símbolo de la repostería charaleña. Acompañan festividades tradicionales. Representan herencia campesina.",
-      audioTestimonio: "🎙️ 'Las genoas las hacía mi abuela para las fiestas del pueblo...'"
+    "cabro-pepitoria": {
+      nombre: "Cabro con Pepitoria", provinciaSlug: "garciarovira", provinciaNombre: "García Rovira (Málaga)", img: "https://placehold.co/600x400/D4AF7A/FFF?text=Cabro+Pepitoria",
+      origen: "El cabro fue introducido por españoles (siglo XVI). La pepitoria tiene raíces árabes-españolas.",
+      historia: "Adaptación santandereana con arroz, sangre y vísceras. Símbolo de Málaga y García Rovira.",
+      lineaTiempo: ["Siglo XVI: Introducción", "Época Colonial: Adaptación", "Siglo XIX: Plato campesino", "Siglo XXI: Patrimonio"],
+      personajes: ["Don Fructuoso Quiñónez", "Familias caprinocultoras"],
+      ingredientes: "Cabro, ajo, comino, cerveza. Pepitoria: vísceras, sangre, arroz, achiote.",
+      preparacion: "Adobo, cocción lenta. Pepitoria: sofrito, mezcla con arroz y sangre.",
+      curiosidades: "Influencia árabe. Nada se desperdicia. Plato insignia de García Rovira.",
+      frase: "“Sabor de las montañas de García Rovira, tradición heredada.”"
     },
-    // Provincia Soto Norte
-    "mute-sotanorte": {
-      nombre: "Mute Santandereano", provinciaSlug: "sotonorte", provinciaNombre: "Soto Norte (Matanza)",
-      img: "https://placehold.co/600x400/C86A4A/FFF?text=Mute+Soto+Norte",
-      historia: "Plato insignia de Santander, especialmente en Matanza (Soto Norte). Proviene del quechua 'mote' (maíz cocido). Mezcla herencia indígena y española. Caldo espeso con maíz, carnes, garbanzos y verduras. Ideal para campesinos por su alto valor energético.",
-      lineaTiempo: ["Antes del XVI: Maíz base indígena", "Siglo XVI: incorporación de carnes", "Siglos XVII-XVIII: mestizaje culinario", "Siglo XIX: alimento de arrieros", "Siglo XXI: símbolo departamental"],
-      personajes: ["Familias campesinas de Matanza", "Abuelas santandereanas", "Cocineras tradicionales"],
-      ingredientes: "Maíz pelado, costilla de res, carne de res, callo/mondongo, pata de res, cerdo, garbanzos, fríjoles, papa criolla, papa pastusa, yuca, ahuyama, zanahoria, cebolla, ajo, cilantro, comino.",
-      preparacion: "Cocción larga del maíz, cocción de carnes, incorporación de legumbres y verduras, sofrito, cocción lenta hasta espesar. Servir con arroz, aguacate, arepa y ají.",
-      curiosidades: "Puede contener más de 15 ingredientes. Tradicionalmente en fogón de leña. Se dice: 'Quien prueba mute santandereano, es santandereano'.",
-      audioTestimonio: "🎙️ 'El mute se preparaba los domingos en la casa de mi abuela...'"
+    "sancocho-trifasico": {
+      nombre: "Sancocho Trifásico", provinciaSlug: "yariguies", provinciaNombre: "Yariguíes (Barrancabermeja)", img: "https://placehold.co/600x400/6F9E6F/FFF?text=Sancocho+Trif%C3%A1sico",
+      origen: "Nació en reuniones de pescadores y obreros petroleros de Barrancabermeja.",
+      historia: "Tres proteínas: bagre ahumado, gallina criolla y res. Símbolo de integración social. Festival anual.",
+      lineaTiempo: ["Siglo XIX: Sancochos ribereños", "1900-1950: Auge petrolero", "2005: Festival del Sancocho"],
+      personajes: ["Mery Martínez", "Cocineras tradicionales", "Familias pescadoras"],
+      ingredientes: "Cabeza de bagre ahumado, gallina, res, yuca, plátano, papa, mazorca.",
+      preparacion: "Cocción lenta de las tres carnes, incorporación de bastimentos, sofrito, reposo.",
+      curiosidades: "El nombre viene de las tres carnes. La cabeza de bagre da textura espesa.",
+      frase: "“Sabor del río, del trabajo y de la unión en Yariguíes.”"
+    },
+    "sancocho-chorotas": {
+      nombre: "Sancocho de Chorotas", provinciaSlug: "comunera", provinciaNombre: "Comunera (El Socorro)", img: "https://placehold.co/600x400/B58B5A/FFF?text=Sancocho+Chorotas",
+      origen: "Las chorotas son masas de maíz pelao rellenas de origen guane.",
+      historia: "En El Socorro se conserva como receta familiar de reuniones campesinas y religiosas.",
+      lineaTiempo: ["Antes del XVI: Maíz guane", "Siglo XVI: Fusión", "Siglo XIX: Plato tradicional"],
+      personajes: ["Familias campesinas de El Socorro", "Abuelas comuneras"],
+      ingredientes: "Gallina criolla, res, maíz pelao, carne para relleno, hogao, verduras.",
+      preparacion: "Preparación de chorotas, caldo de gallina y res, adición de chorotas al final.",
+      curiosidades: "Las chorotas son más antiguas que el sancocho. Cada familia tiene su relleno secreto.",
+      frase: "“Sabor de la memoria comunera, del maíz ancestral.”"
+    },
+    "bocadillo-veleño": {
+      nombre: "Bocadillo Veleño", provinciaSlug: "velez", provinciaNombre: "Vélez", img: "https://placehold.co/600x400/AA7C4A/FFF?text=Bocadillo+Vele%C3%B1o",
+      origen: "Origen colonial a partir de guayaba cocida con panela en la provincia de Vélez.",
+      historia: "En 2003 obtuvo la primera Denominación de Origen Protegida para un alimento colombiano. Empaque en hojas de bijao.",
+      lineaTiempo: ["Siglos XVII-XVIII: Creación", "Siglo XIX: Producción artesanal", "2003: Denominación de Origen"],
+      personajes: ["Familias de Vélez, Guavatá, Barbosa", "Productores del río Suárez"],
+      ingredientes: "Guayaba roja, azúcar o panela, hojas de bijao.",
+      preparacion: "Cocción en pailas de cobre, concentración, moldeado, empaque en bijao.",
+      curiosidades: "Primer alimento colombiano con denominación de origen. Conocido como el 'dulce nacional'.",
+      frase: "“Expresión de tradición y trabajo campesino de la Provincia de Vélez.”"
+    },
+    "mute-santandereano": {
+      nombre: "Mute Santandereano", provinciaSlug: "sotonorte", provinciaNombre: "Soto Norte (Matanza)", img: "https://placehold.co/600x400/C86A4A/FFF?text=Mute",
+      origen: "Del quechua 'mote' (maíz cocido). Fusión indígena y española.",
+      historia: "Plato insignia de Santander, especialmente en Matanza (Soto Norte). Alto valor energético para campesinos.",
+      lineaTiempo: ["Antes del XVI: Maíz indígena", "Siglo XVI: Incorporación de carnes", "Siglo XXI: Plato insignia"],
+      personajes: ["Familias de Matanza", "Abuelas santandereanas"],
+      ingredientes: "Maíz pelado, carnes (res, cerdo, callo), garbanzos, fríjoles, papas, yuca, ahuyama.",
+      preparacion: "Cocción larga de maíz, cocción de carnes, legumbres, verduras, sofrito.",
+      curiosidades: "Más de 15 ingredientes. Dicho: 'Quien prueba mute, es santandereano'.",
+      frase: "“Sabor de las montañas de Soto Norte, herencia culinaria.”"
     },
     "arepa-santandereana": {
-      nombre: "Arepa Santandereana", provinciaSlug: "sotonorte", provinciaNombre: "Soto Norte",
-      img: "https://placehold.co/600x400/D4A76A/FFF?text=Arepa+Santandereana",
-      historia: "Origen prehispánico con los indígenas guanes. El maíz era base alimenticia. Durante la colonia se incorporó el chicharrón molido a la masa. Alimento esencial de mineros, arrieros y agricultores de Soto Norte (Matanza, Suratá, Vetas).",
-      lineaTiempo: ["Antes del XVI: Arepas ancestrales", "Siglo XVI: llegada de cerdo", "Siglos XVII-XIX: popularización", "Siglo XX: símbolo regional"],
-      personajes: ["Indígenas Guanes", "Familias campesinas de Matanza y Suratá", "Productores de maíz"],
-      ingredientes: "Maíz amarillo o maíz pelao, chicharrón de cerdo molido, agua, sal. Opcional: yuca rallada, queso, mantequilla.",
-      preparacion: "Cocción del maíz, molienda con chicharrón, amasado, formado de arepas delgadas, cocción en tiesto de barro o plancha hasta dorar.",
-      curiosidades: "El chicharrón molido dentro de la masa es su sello distintivo. Se cocina tradicionalmente en leña. Acompaña mute, carne oreada, cabro, chocolate caliente.",
-      audioTestimonio: "🎙️ 'La arepa con chicharrón es el desayuno de los mineros de Vetas...'"
-    },
-    // Provincia Comunera
-    "sancocho-chorotas": {
-      nombre: "Sancocho de Chorotas", provinciaSlug: "comunera", provinciaNombre: "Comunera (El Socorro)",
-      img: "https://placehold.co/600x400/B58B5A/FFF?text=Sancocho+Chorotas",
-      historia: "Plato ancestral de la Provincia Comunera. Las chorotas son masas de maíz pelao rellenas de carne o guiso. Origen indígena guane fusionado con ingredientes europeos. En El Socorro se conserva como receta familiar de reuniones y festividades.",
-      lineaTiempo: ["Antes del XVI: Maíz guane", "Siglo XVI: fusión con gallina", "Siglos XVII-XIX: consolidación", "Siglo XXI: patrimonio cultural"],
-      personajes: ["Familias campesinas de El Socorro, Oiba, Confines", "Abuelas comuneras", "Programa 'Fogones de Mis Nonos'"],
-      ingredientes: "Para el sancocho: gallina criolla, costilla de res, yuca, plátano verde, mazorca, ahuyama, arracacha, cebolla, tomate, ajo, cilantro, guacas. Para chorotas: maíz pelao molido, carne desmechada/pollo, hogao.",
-      preparacion: "Chorotas: masa de maíz, relleno, formado. Caldo: cocción gallina y res, agregar bastimentos, incorporar chorotas al final sin romper, cocción lenta.",
-      curiosidades: "Las chorotas son más antiguas que el sancocho. Cada familia tiene su receta de relleno. Es plato de reunión familiar y orgullo comunero.",
-      audioTestimonio: "🎙️ 'Las chorotas las aprendí de mi madre, ella las hacía para las fiestas del Socorro...'"
-    },
-    // Provincia García Rovira ya tiene cabro, agregamos otro si hace falta, pero mantenemos cabro asignado.
-    // Provincia Vélez
-    "bocadillo-veleño": {
-      nombre: "Bocadillo Veleño", provinciaSlug: "velez", provinciaNombre: "Vélez",
-      img: "https://placehold.co/600x400/AA7C4A/FFF?text=Bocadillo+Vele%C3%B1o",
-      historia: "Producto insignia de la Provincia de Vélez. Origen colonial a partir de la guayaba cocida con panela. Envuelto en hojas de bijao (técnica ancestral). En 2003 obtuvo la primera Denominación de Origen Protegida para un alimento colombiano.",
-      lineaTiempo: ["Antes del XVI: guayaba consumida por indígenas", "Siglos XVII-XVIII: creación del dulce", "Siglo XIX: producción artesanal", "2003: Denominación de Origen"],
-      personajes: ["Familias campesinas de Vélez, Guavatá, Barbosa", "Productores asociados de la Hoya del Río Suárez", "Empresarios tradicionales"],
-      ingredientes: "Guayaba roja madura, azúcar o panela, agua. Empaque: hojas de bijao.",
-      preparacion: "Selección de fruta, lavado, despulpado, cocción en pailas de cobre, concentración removiendo constantemente, moldeado, enfriado, empaque en hojas de bijao.",
-      curiosidades: "Primer alimento colombiano con Denominación de Origen. Las hojas de bijao aportan aroma característico. Conocido como el 'dulce nacional'. Exportado a varios países.",
-      audioTestimonio: "🎙️ 'El bocadillo de Vélez se sigue envolviendo en bijao como hace cien años...'"
-    },
-    // Provincia Yariguíes
-    "sancocho-trifasico": {
-      nombre: "Sancocho Trifásico", provinciaSlug: "yariguies", provinciaNombre: "Yariguíes (Barrancabermeja)",
-      img: "https://placehold.co/600x400/6F9E6F/FFF?text=Sancocho+Trif%C3%A1sico",
-      historia: "Plato ribereño del Magdalena Medio, originado en Barrancabermeja. Mezcla tres proteínas: cabeza de bagre ahumado, gallina criolla y carne de res. Símbolo de integración social, trabajo petrolero y pescadores. Existe el Festival del Sancocho en el barrio Cincuentenario.",
-      lineaTiempo: ["Siglos XIX: sancochos comunitarios", "1900-1950: auge petrolero", "1950-1980: consolidación trifásico", "2005: Festival del Sancocho", "2023: institucionalizado"],
-      personajes: ["Mery Martínez (impulsora del festival)", "Cocineras tradicionales de Barrancabermeja", "Familias pescadoras y obreras"],
-      ingredientes: "Cabeza de bagre ahumado, gallina criolla, hueso/carne de res, yuca, plátano verde, papa, mazorca, cebolla larga, tomate, ajo, cilantro, comino.",
-      preparacion: "Cocción lenta de carnes para caldo concentrado, incorporar bastimentos, sofrito, cocción prolongada, reposo. Servir con arroz blanco, patacón, aguacate, suero, ají.",
-      curiosidades: "'Trifásico' por sus tres carnes. La cabeza de bagre da textura espesa. Festival anual. Plato de unión comunitaria y patrimonio del Magdalena Medio.",
-      audioTestimonio: "🎙️ 'El sancocho trifásico se hace para compartir con los vecinos en el barrio...'"
-    },
-    // Provincia Metropolitana
-    "obleas-florideñas": {
-      nombre: "Obleas Florideñas", provinciaSlug: "metropolitana", provinciaNombre: "Metropolitana (Floridablanca)",
-      img: "https://placehold.co/600x400/DEB887/FFF?text=Obleas+Floride%C3%B1as",
-      historia: "Floridablanca es la 'Ciudad Dulce de Colombia'. La tradición moderna inició alrededor de 1949 con 'Conchita', quien comercializó obleas con arequipe. Hoy hay más de 30 sabores, nombres románticos y es un atractivo turístico con la 'Calle Dulce'.",
-      lineaTiempo: ["1949: Inicio con Conchita", "1950-70: popularización", "1980-90: combinaciones con queso, mora, crema", "2000: boom turístico", "2021-25: proceso denominación origen"],
-      personajes: ["Conchita (pionera)", "Familia Morales Padilla", "Martha Pinto Jiménez (nombres románticos)", "Cristian Jiménez (innovaciones con hormigas, chicharrón)"],
-      ingredientes: "Oblea: harina de trigo, leche, azúcar, mantequilla. Relleno tradicional: arequipe artesanal, queso campesino rallado, salsa de mora. Modernos: crema chantillí, frutas, chocolate, helado, ingredientes exóticos.",
-      preparacion: "Elaboración de galleta delgada en oblearios. Preparación de arequipe en pailas de cobre. Ensamblaje: una oblea, arequipe, ingredientes, tapa.",
-      curiosidades: "Más de 40 empresas familiares. Nombres románticos: Amor Prohibido, Noviazgo, Matrimonio. La Calle Dulce es destino turístico.",
-      audioTestimonio: "🎙️ 'Las obleas de Floridablanca se volvieron famosas por la creatividad de las familias...'"
+      nombre: "Arepa Santandereana", provinciaSlug: "sotonorte", provinciaNombre: "Soto Norte", img: "https://placehold.co/600x400/D4A76A/FFF?text=Arepa+Santandereana",
+      origen: "Origen prehispánico con los guanes. Durante la colonia se incorporó chicharrón molido.",
+      historia: "Alimento esencial de mineros y arrieros de Soto Norte. Sello distintivo: chicharrón en la masa.",
+      lineaTiempo: ["Antes del XVI: Arepas ancestrales", "Siglo XVI: incorporación del cerdo", "Siglo XIX: Alimento de arrieros"],
+      personajes: ["Indígenas Guanes", "Familias de Matanza, Suratá, Vetas"],
+      ingredientes: "Maíz pelao, chicharrón molido, sal. Opcional: queso, yuca.",
+      preparacion: "Cocción del maíz, molienda con chicharrón, amasado, formado, cocción en tiesto de barro.",
+      curiosidades: "Chicharrón dentro de la masa es su sello. Cocción tradicional en leña. Una de las mejores arepas de Colombia.",
+      frase: "“Esencia del maíz y tradición minera de Soto Norte.”"
     }
   };
 
-  // Provincias y sus platos asignados según el documento
   const provincias = [
-    { nombre: "Guanentá", slug: "guanenta", platos: ["carne-oreada-guanenta", "cabro-pepitoria", "hormigas-culonas", "genoas-charala"] },
-    { nombre: "Soto Norte", slug: "sotonorte", platos: ["mute-sotanorte", "arepa-santandereana"] },
-    { nombre: "Comunera", slug: "comunera", platos: ["sancocho-chorotas"] },
+    { nombre: "Metropolitana", slug: "metropolitana", platos: [] },  // Para ruta visual
+    { nombre: "Guanentá", slug: "guanenta", platos: ["carne-oreada", "guarapo", "genoa-charala", "hormigas-culonas"] },
     { nombre: "García Rovira", slug: "garciarovira", platos: ["cabro-pepitoria"] },
-    { nombre: "Vélez", slug: "velez", platos: ["bocadillo-veleño"] },
     { nombre: "Yariguíes", slug: "yariguies", platos: ["sancocho-trifasico"] },
-    { nombre: "Metropolitana", slug: "metropolitana", platos: ["obleas-florideñas"] }
+    { nombre: "Comunera", slug: "comunera", platos: ["sancocho-chorotas"] },
+    { nombre: "Vélez", slug: "velez", platos: ["bocadillo-veleño"] },
+    { nombre: "Soto Norte", slug: "sotonorte", platos: ["mute-santandereano", "arepa-santandereana"] }
+  ];
+
+  // Ruta turística con puntos
+  const destinosRuta = [
+    { nombre: "Barichara", plato: "Carne Oreada y Guarapo", img: "https://placehold.co/600x400/AF7F5A/FFF?text=Barichara", lat: 6.635, lng: -73.222, descripcion: "Patrimonio arquitectónico y gastronómico. Prueba la carne oreada en el mirador." },
+    { nombre: "San Gil", plato: "Hormigas Culonas y Cabro", img: "https://placehold.co/600x400/D4AF7A/FFF?text=San+Gil", lat: 6.560, lng: -73.135, descripcion: "Aventura y tradición. Degusta hormigas culonas en la plaza principal." },
+    { nombre: "Málaga", plato: "Cabro con Pepitoria", img: "https://placehold.co/600x400/D4AF7A/FFF?text=Malaga", lat: 6.700, lng: -72.732, descripcion: "Capital de García Rovira, famosa por su cabro y pepitoria." },
+    { nombre: "El Socorro", plato: "Sancocho de Chorotas", img: "https://placehold.co/600x400/B58B5A/FFF?text=Socorro", lat: 6.468, lng: -73.260, descripcion: "Cuna de los comuneros. Sancocho de chorotas en el mercado campesino." },
+    { nombre: "Vélez", plato: "Bocadillo Veleño", img: "https://placehold.co/600x400/AA7C4A/FFF?text=Velez", lat: 6.010, lng: -73.676, descripcion: "Cuna del bocadillo. Visita las fábricas artesanales." },
+    { nombre: "Matanza", plato: "Mute Santandereano", img: "https://placehold.co/600x400/C86A4A/FFF?text=Matanza", lat: 7.321, lng: -72.998, descripcion: "Capital de Soto Norte. El mejor mute tradicional." },
+    { nombre: "Floridablanca", plato: "Obleas Florideñas", img: "https://placehold.co/600x400/DEB887/FFF?text=Floridablanca", lat: 7.074, lng: -73.097, descripcion: "Ciudad Dulce de Colombia. Calle Dulce y obleas con nombres románticos." }
   ];
 
   function renderProvincias() {
     const container = document.getElementById("provincias-buttons");
     container.innerHTML = "";
     provincias.forEach(prov => {
+      if (prov.platos.length === 0) return;
       const btn = document.createElement("button");
       btn.className = "provincia-btn";
       btn.innerText = prov.nombre;
       btn.onclick = () => mostrarPlatosProvincia(prov);
       container.appendChild(btn);
     });
-    mostrarPlatosProvincia(provincias[0]);
+    if (provincias.find(p => p.platos.length)) mostrarPlatosProvincia(provincias.find(p => p.platos.length));
   }
 
   function mostrarPlatosProvincia(provincia) {
     const galeriaDiv = document.getElementById("galeria-platos-provincia");
     galeriaDiv.innerHTML = "";
     let platosMostrados = [];
-    provincia.platos.forEach(slug => {
-      if (platosData[slug]) platosMostrados.push(platosData[slug]);
-    });
-    if (platosMostrados.length === 0) {
-      galeriaDiv.innerHTML = `<div style="padding:2rem; background:#FCF7EF; border-radius: 48px;">Próximamente más sabores de ${provincia.nombre}</div>`;
-      return;
-    }
+    provincia.platos.forEach(slug => { if (platosData[slug]) platosMostrados.push(platosData[slug]); });
+    if (platosMostrados.length === 0) { galeriaDiv.innerHTML = `<div style="padding:2rem;">Próximamente</div>`; return; }
     platosMostrados.forEach(plato => {
       const card = document.createElement("div");
       card.className = "plato-tarjeta";
-      card.innerHTML = `
-        <div class="plato-img" style="background-image: url('${plato.img}');"></div>
-        <div class="plato-info">
-          <h3>${plato.nombre}</h3>
-          <p><i class="fas fa-map-marker-alt"></i> ${plato.provinciaNombre}</p>
-          <button class="btn" style="padding:6px 16px; margin-top:8px;" data-slug="${Object.keys(platosData).find(k => platosData[k].nombre === plato.nombre && platosData[k].provinciaSlug === provincia.slug) || Object.keys(platosData).find(k => platosData[k].nombre === plato.nombre)}">Ver historia completa →</button>
-        </div>
-      `;
+      card.innerHTML = `<div class="plato-img" style="background-image: url('${plato.img}');"></div><div class="plato-info"><h3>${plato.nombre}</h3><p><i class="fas fa-map-marker-alt"></i> ${plato.provinciaNombre}</p><button class="btn" style="padding:6px 16px;">Ver historia</button></div>`;
       const btn = card.querySelector("button");
-      btn.onclick = (e) => { e.stopPropagation(); const slugKey = Object.keys(platosData).find(k => platosData[k].nombre === plato.nombre); if(slugKey) abrirModalPlato(slugKey); };
+      const slugKey = Object.keys(platosData).find(k => platosData[k].nombre === plato.nombre);
+      btn.onclick = () => abrirModalPlato(slugKey);
       galeriaDiv.appendChild(card);
     });
   }
@@ -423,24 +481,17 @@
     const plato = platosData[slug];
     if (!plato) return;
     const modal = document.getElementById("modalPlato");
-    const detalleDiv = document.getElementById("detalleDinamico");
-    detalleDiv.innerHTML = `
+    document.getElementById("detalleDinamico").innerHTML = `
       <h1 style="color: var(--terracota);">${plato.nombre}</h1>
-      <img src="${plato.img}" style="width:100%; max-height: 300px; object-fit:cover; border-radius: 32px; margin:16px 0;">
-      <h2>📜 Historia del Plato</h2>
-      <p>${plato.historia}</p>
-      <h2>⏳ Línea del Tiempo</h2>
-      <div class="timeline-plato">${plato.lineaTiempo.map(t => `<span class="timeline-node">${t}</span>`).join('')}</div>
-      <h2>👥 Personajes y Familias Guardianas</h2>
-      <ul>${plato.personajes.map(p => `<li>${p}</li>`).join('')}</ul>
-      <h2>🥘 Ingredientes Tradicionales</h2>
-      <p>${plato.ingredientes}</p>
-      <h2>🍳 Preparación Paso a Paso</h2>
-      <p>${plato.preparacion}</p>
-      <h2>✨ Curiosidades y Patrimonio</h2>
-      <p>${plato.curiosidades}</p>
-      <div class="voz-card"><i class="fas fa-microphone-alt"></i> <strong>Voz de la tradición:</strong> ${plato.audioTestimonio || "Testimonio transmitido por generaciones en la cultura oral santandereana."}</div>
-    `;
+      <img src="${plato.img}" style="width:100%; max-height:300px; object-fit:cover; border-radius:32px; margin:16px 0;">
+      <h2>📜 Origen</h2><p>${plato.origen}</p>
+      <h2>📖 Historia</h2><p>${plato.historia}</p>
+      <h2>⏳ Línea del Tiempo</h2><div class="timeline-plato">${plato.lineaTiempo.map(t => `<span class="timeline-node">${t}</span>`).join('')}</div>
+      <h2>👥 Personajes</h2><ul>${plato.personajes.map(p => `<li>${p}</li>`).join('')}</ul>
+      <h2>🥘 Ingredientes</h2><p>${plato.ingredientes}</p>
+      <h2>🍳 Preparación</h2><p>${plato.preparacion}</p>
+      <h2>✨ Curiosidades</h2><p>${plato.curiosidades}</p>
+      <div class="frase-icon"><i class="fas fa-quote-left"></i> ${plato.frase}</div>`;
     modal.style.display = "block";
   }
 
@@ -451,15 +502,7 @@
       const card = document.createElement("div");
       card.className = "plato-tarjeta";
       card.style.width = "100%";
-      card.innerHTML = `
-        <div class="plato-img" style="background-image: url('${plato.img}'); height:180px;"></div>
-        <div class="plato-info">
-          <h3>${plato.nombre}</h3>
-          <p><strong>Provincia:</strong> ${plato.provinciaNombre}</p>
-          <p><span style="background: var(--dorado-suave); padding:2px 8px; border-radius:20px;">Historia ✓</span> <span style="background: var(--dorado-suave); padding:2px 8px; border-radius:20px;">Receta ✓</span> <span style="background: var(--dorado-suave); padding:2px 8px; border-radius:20px;">Tradición oral ✓</span></p>
-          <button class="btn" style="margin-top:8px;">Explorar historia completa</button>
-        </div>
-      `;
+      card.innerHTML = `<div class="plato-img" style="background-image: url('${plato.img}'); height:180px;"></div><div class="plato-info"><h3>${plato.nombre}</h3><p>${plato.provinciaNombre}</p><button class="btn">Historia completa</button></div>`;
       const btn = card.querySelector("button");
       const slugKey = Object.keys(platosData).find(k => platosData[k].nombre === plato.nombre);
       btn.onclick = () => abrirModalPlato(slugKey);
@@ -467,21 +510,51 @@
     });
   }
 
-  function cargarVoces() {
-    const container = document.getElementById("voces-container");
-    container.innerHTML = `
-      <div class="voz-card" style="flex:1;"><i class="fas fa-user-check"></i> <strong>Doña Rosa - Barichara (Carne Oreada)</strong><br><p>"La carne se oreaba en los corredores de bahareque, con el humo de la leña... así la hacía mi abuela."</p><i class="fas fa-play-circle"></i> Audio testimonio disponible en archivo oral.</div>
-      <div class="voz-card" style="flex:1;"><i class="fas fa-leaf"></i> <strong>Don Fructuoso Quiñónez - Málaga (Cabro)</strong><br><p>"El cabro con pepitoria es el orgullo de García Rovira, lo heredé de mi abuela y lo enseño a mis nietas."</p></div>
-      <div class="voz-card" style="flex:1;"><i class="fas fa-hive"></i> <strong>Recolectora de Hormigas - Charalá</strong><br><p>"Las hormigas culonas se recogen pidiendo permiso a la tierra, son un regalo de los guanes."</p></div>
-    `;
+  function cargarRuta() {
+    const container = document.getElementById("ruta-container");
+    container.innerHTML = destinosRuta.map(d => `
+      <div class="ruta-card">
+        <div class="ruta-img" style="background-image: url('${d.img}');"></div>
+        <div class="ruta-body">
+          <h3><i class="fas fa-map-pin"></i> ${d.nombre}</h3>
+          <p><strong>🍽️ Plato estrella:</strong> ${d.plato}</p>
+          <p>${d.descripcion}</p>
+        </div>
+      </div>
+    `).join('');
+    // Mapa interactivo Leaflet
+    const map = L.map('mapaRuta').setView([6.8, -73.2], 8);
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>' }).addTo(map);
+    destinosRuta.forEach(d => {
+      L.marker([d.lat, d.lng]).bindPopup(`<b>${d.nombre}</b><br>${d.plato}<br>${d.descripcion}`).addTo(map);
+    });
   }
 
-  document.getElementById("closeModalBtn").onclick = () => { document.getElementById("modalPlato").style.display = "none"; };
+  function cargarGaleria() {
+    const imagenesGaleria = [
+      { img: "https://placehold.co/600x400/C86A4A/FFF?text=Mute+en+Olla", titulo: "Mute Santandereano en fogón de leña" },
+      { img: "https://placehold.co/600x400/AF7F5A/FFF?text=Carne+Oreada", titulo: "Carne oreada tradicional" },
+      { img: "https://placehold.co/600x400/D4AF7A/FFF?text=Cabro+Asado", titulo: "Cabro con pepitoria" },
+      { img: "https://placehold.co/600x400/7A5A3A/FFF?text=Hormigas", titulo: "Recolección de hormigas culonas" },
+      { img: "https://placehold.co/600x400/DEB887/FFF?text=Obleas", titulo: "Obleas florideñas - Calle Dulce" },
+      { img: "https://placehold.co/600x400/B58B5A/FFF?text=Chorotas", titulo: "Sancocho de chorotas" }
+    ];
+    const container = document.getElementById("galeria-container");
+    container.innerHTML = imagenesGaleria.map(g => `
+      <div class="galeria-item">
+        <div class="galeria-img" style="background-image: url('${g.img}');"></div>
+        <p>${g.titulo}</p>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById("closeModalBtn").onclick = () => document.getElementById("modalPlato").style.display = "none";
   window.onclick = (e) => { if (e.target === document.getElementById("modalPlato")) document.getElementById("modalPlato").style.display = "none"; };
 
   renderProvincias();
   cargarBiblioteca();
-  cargarVoces();
+  cargarRuta();
+  cargarGaleria();
 </script>
 </body>
 </html>
